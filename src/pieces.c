@@ -142,100 +142,56 @@ i32 white_queen[PIECE_HEIGHT][PIECE_WIDTH] = {
 };
 
 void drawPiece(SDL_Renderer* renderer, Piece piece) {
+    if (piece.type == None) {
+        return;  // No piece to draw
+    }
+
+    i32 (*glyph)[PIECE_WIDTH]; 
+
     switch (piece.type) {
-        case PAWN: {
-            for (i32 y = 0; y < PIECE_HEIGHT; ++y) {
-                for (i32 x = 0; x < PIECE_WIDTH; ++x) {
-                    Color background_color = (((i32)piece.gridPos.x + (i32)piece.gridPos.y)%2) ? WHITESMOKE : GRAY;
-                    Rect rect = {Vec2(x * PIECE_WIDTH + piece.gridPos.x * 64, y * PIECE_HEIGHT + piece.gridPos.y * 64), PIECE_WIDTH, PIECE_HEIGHT, background_color};
-                    if (piece.color == WhitePiece && white_pawn[y][x] == 1) {
-                        rect.color = BLACK;
-                    } else if (piece.color == BlackPiece && black_pawn[y][x] == 1) {
-                        rect.color = BLACK;
-                    }
-                    drawFillRect(renderer, rect);
-                }
-            }
-        }
-        break;
-        case ROOK: {
-            for (i32 y = 0; y < PIECE_HEIGHT; ++y) {
-                for (i32 x = 0; x < PIECE_WIDTH; ++x) {
-                    Color background_color = (((i32)piece.gridPos.x + (i32)piece.gridPos.y)%2) ? WHITESMOKE : GRAY;
-                    Rect rect = {Vec2(x * PIECE_WIDTH + piece.gridPos.x * 64, y * PIECE_HEIGHT + piece.gridPos.y * 64), PIECE_WIDTH, PIECE_HEIGHT, background_color};
-                    if (piece.color == WhitePiece && white_rook[y][x] == 1) {
-                        rect.color = BLACK;
-                    } else if (piece.color == BlackPiece && black_rook[y][x] == 1) {
-                        rect.color = BLACK;
-                    }
-                    drawFillRect(renderer, rect);
-                }
-            }
-        }
-        break;
-        case KNIGHT: {
-            for (i32 y = 0; y < 8; ++y) {
-                for (i32 x = 0; x < 8; ++x) {
-                    Color background_color = (((i32)piece.gridPos.x + (i32)piece.gridPos.y)%2) ? WHITESMOKE : GRAY;
-                    Rect rect = {Vec2(x * 8 + piece.gridPos.x * 64, y * 8 + piece.gridPos.y * 64), 8, 8, background_color};
-                    if (piece.color == WhitePiece && white_knight[y][x] == 1) {
-                        rect.color = BLACK;
-                    } else if (piece.color == BlackPiece && black_knight[y][x] == 1) {
-                        rect.color = BLACK;
-                    }
-                    drawFillRect(renderer, rect);
-                }
-            }
-        }
-        break;
-        case BISHOP: {
-            for (i32 y = 0; y < 8; ++y) {
-                for (i32 x = 0; x < 8; ++x) {
-                    Color background_color = (((i32)piece.gridPos.x + (i32)piece.gridPos.y)%2) ? WHITESMOKE : GRAY;
-                    Rect rect = {Vec2(x * 8 + piece.gridPos.x * 64, y * 8 + piece.gridPos.y * 64), 8, 8, background_color};
-                    if (piece.color == WhitePiece && white_bishop[y][x] == 1) {
-                        rect.color = BLACK;
-                    } else if (piece.color == BlackPiece && black_bishop[y][x] == 1) {
-                        rect.color = BLACK;
-                    }
-                    drawFillRect(renderer, rect);
-                }
-            }
-        }
-        break;
-        case QUEEN: {
-            for (i32 y = 0; y < 8; ++y) {
-                for (i32 x = 0; x < 8; ++x) {
-                    Color background_color = (((i32)piece.gridPos.x + (i32)piece.gridPos.y)%2) ? WHITESMOKE : GRAY;
-                    Rect rect = {Vec2(x * 8 + piece.gridPos.x * 64, y * 8 + piece.gridPos.y * 64), 8, 8, background_color};
-                    if (piece.color == WhitePiece && white_queen[y][x] == 1) {
-                        rect.color = BLACK;
-                    } else if (piece.color == BlackPiece && black_queen[y][x] == 1) {
-                        rect.color = BLACK;
-                    }
-                    drawFillRect(renderer, rect);
-                }
-            }
-        }
-        break;
-        case KING: {
-            for (i32 y = 0; y < 8; ++y) {
-                for (i32 x = 0; x < 8; ++x) {
-                    Color background_color = (((i32)piece.gridPos.x + (i32)piece.gridPos.y)%2) ? WHITESMOKE : GRAY;
-                    Rect rect = {Vec2(x * 8 + piece.gridPos.x * 64, y * 8 + piece.gridPos.y * 64), 8, 8, background_color};
-                    if (piece.color == WhitePiece && white_king[y][x] == 1) {
-                        rect.color = BLACK;
-                    } else if (piece.color == BlackPiece && black_king[y][x] == 1) {
-                        rect.color = BLACK;
-                    }
-                    drawFillRect(renderer, rect);
-                }
-            }
-        }
-        break;
-        default: {
-            puts("How did we get here?");
-            exit(EXIT_FAILURE);
+        case PAWN:
+            if (piece.color == BlackPiece) {glyph = (i32(*)[PIECE_WIDTH])black_pawn;}
+            else {glyph = (i32(*)[PIECE_WIDTH])white_pawn;}
+            break;
+        case ROOK:
+            if (piece.color == BlackPiece) {glyph = (i32(*)[PIECE_WIDTH])black_rook;}
+            else {glyph = (i32(*)[PIECE_WIDTH])white_rook;}
+            break;
+        case KNIGHT:
+            if (piece.color == BlackPiece) {glyph = (i32(*)[PIECE_WIDTH])black_knight;}
+            else {glyph = (i32(*)[PIECE_WIDTH])white_knight;}
+            break;
+        case BISHOP:
+            if (piece.color == BlackPiece) {glyph = (i32(*)[PIECE_WIDTH])black_bishop;}
+            else {glyph = (i32(*)[PIECE_WIDTH])white_bishop;}
+            break;
+        case QUEEN:
+            if (piece.color == BlackPiece) {glyph = (i32(*)[PIECE_WIDTH])black_queen;}
+            else {glyph = (i32(*)[PIECE_WIDTH])white_queen;}
+            break;
+        case KING:
+            if (piece.color == BlackPiece) {glyph = (i32(*)[PIECE_WIDTH])black_king;}
+            else {glyph = (i32(*)[PIECE_WIDTH])white_king;}
+            break;
+        default: glyph = NULL;
+    };
+
+    if (glyph == NULL) {
+        return;  // No glyph for this piece
+    }
+
+    for (i32 y = 0; y < PIECE_HEIGHT; ++y) {
+        for (i32 x = 0; x < PIECE_WIDTH; ++x) {
+            Color backgroundColor = (((i32)piece.gridPos.x + (i32)piece.gridPos.y) % 2) ? WHITESMOKE : GRAY;
+
+            Rect rect = {
+                Vec2(x * (64.0 / PIECE_WIDTH) + piece.gridPos.x * 64, y * (64.0 / PIECE_HEIGHT) + piece.gridPos.y * 64),  // Position
+                64.0 / PIECE_WIDTH,  // Width
+                64.0 / PIECE_HEIGHT, // Height
+                glyph[y][x] == 1 ? BLACK : backgroundColor // Color
+            };
+
+            drawFillRect(renderer, rect);
         }
     }
 }
@@ -244,8 +200,8 @@ char* pieceTypeToString(PieceType type) {
     switch (type) {
         case PAWN: return "Pawn";
         case ROOK: return "Rook";
-        case BISHOP: return "Bishop";
         case KNIGHT: return "Knight";
+        case BISHOP: return "Bishop";
         case KING: return "King";
         case QUEEN: return "Queen";
         case None: return "Empty";
