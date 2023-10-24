@@ -10,7 +10,7 @@
 #include "include/rect.h"
 
 // Constants
-#define SCREEN_WIDTH     700
+#define SCREEN_WIDTH     512
 #define SCREEN_HEIGHT    512
 
 #define CELL_SIZE        64
@@ -24,25 +24,32 @@
 #define BACKGROUND_COLOR BLACK
 // __Constants
 
+// Macros
+
+#define PLACE_PIECE(x, y, type, color) state.pieces[y][x] = type(x, y, color)
+#define EMPTY_SQUARE(x, y)             state.pieces[y][x] = Empty(x, y)
+
+// __Macros
+
 typedef struct GameState {
     i32 board[NUM_ROWS][NUM_COLS];
     Piece pieces[NUM_ROWS][NUM_COLS];
-    Piece* swap_buffer[2];
-    bool square_pressed;
+    Piece* moveBuffer[2];
+    bool wasSquarePressed;
 } GameState;
 
 GameState state;
 
 void move_pieces(void) {
-    state.swap_buffer[1]->color = state.swap_buffer[0]->color; 
-    state.swap_buffer[1]->type = state.swap_buffer[0]->type; 
+    state.moveBuffer[1]->color = state.moveBuffer[0]->color; 
+    state.moveBuffer[1]->type = state.moveBuffer[0]->type; 
 
-    state.swap_buffer[0]->color = WhitePiece;
-    state.swap_buffer[0]->type = None;
+    state.moveBuffer[0]->color = BlackPiece;
+    state.moveBuffer[0]->type = None;
 
-    // Clear the swap_buffer
-    state.swap_buffer[0] = NULL;
-    state.swap_buffer[1] = NULL;
+    // Clear the moveBuffer
+    state.moveBuffer[0] = NULL;
+    state.moveBuffer[1] = NULL;
 }
 
 void init(void) {
@@ -51,37 +58,38 @@ void init(void) {
         for (i32 x = 0; x < NUM_COLS; ++x) {
             state.board[y][x] = ((x+y)%2);
             
-            if (y == 1) {state.pieces[y][x] = Pawn(x, y, BlackPiece);} // Black Pawns
-            else if (y == 6) {state.pieces[y][x] = Pawn(x, y, WhitePiece);} // White Pawns
-            else {state.pieces[y][x] = Empty(x, y);}
+            if (y == 1) {PLACE_PIECE(x, y, Pawn, BlackPiece);} // Black Pawns
+            else if (y == 6) {PLACE_PIECE(x, y, Pawn, WhitePiece);} // White Pawns
+            else {EMPTY_SQUARE(x, y);}
 
         }
     }
     
-    state.pieces[0][0] = Rook(0, 0, BlackPiece); // Black pieces
-    state.pieces[0][1] = Knight(1, 0, BlackPiece);
-    state.pieces[0][2] = Bishop(2, 0, BlackPiece);
-    state.pieces[0][3] = Queen(3, 0, BlackPiece);
-    state.pieces[0][4] = King(4, 0, BlackPiece);
-    state.pieces[0][5] = Bishop(5, 0, BlackPiece);
-    state.pieces[0][6] = Knight(6, 0, BlackPiece);
-    state.pieces[0][7] = Rook(7, 0, BlackPiece);
+    // Place the pieces on the board
+    PLACE_PIECE(0, 0, Rook, BlackPiece); // Black pieces
+    PLACE_PIECE(1, 0, Knight, BlackPiece);
+    PLACE_PIECE(2, 0, Bishop, BlackPiece);
+    PLACE_PIECE(3, 0, Queen, BlackPiece);
+    PLACE_PIECE(4, 0, King, BlackPiece);
+    PLACE_PIECE(5, 0, Bishop, BlackPiece);
+    PLACE_PIECE(6, 0, Knight, BlackPiece);
+    PLACE_PIECE(7, 0, Rook, BlackPiece);
 
-    state.pieces[7][0] = Rook(0, 7, WhitePiece); // White pieces
-    state.pieces[7][1] = Knight(1, 7, WhitePiece);
-    state.pieces[7][2] = Bishop(2, 7, WhitePiece);
-    state.pieces[7][3] = Queen(3, 7, WhitePiece);
-    state.pieces[7][4] = King(4, 7, WhitePiece);
-    state.pieces[7][5] = Bishop(5, 7, WhitePiece);
-    state.pieces[7][6] = Knight(6, 7, WhitePiece);
-    state.pieces[7][7] = Rook(7, 7, WhitePiece);
+    PLACE_PIECE(0, 7, Rook, WhitePiece); // White pieces
+    PLACE_PIECE(1, 7, Knight, WhitePiece);
+    PLACE_PIECE(2, 7, Bishop, WhitePiece);
+    PLACE_PIECE(3, 7, Queen, WhitePiece);
+    PLACE_PIECE(4, 7, King, WhitePiece);
+    PLACE_PIECE(5, 7, Bishop, WhitePiece);
+    PLACE_PIECE(6, 7, Knight, WhitePiece);
+    PLACE_PIECE(7, 7, Rook, WhitePiece);
 }
 
 void display(SDL_Renderer* renderer) {
     for (i32 y = 0; y < NUM_ROWS; ++y) {
         for (i32 x = 0; x < NUM_COLS; ++x) {
             Rect square = {{x * CELL_SIZE, y * CELL_SIZE}, CELL_SIZE, CELL_SIZE, GRAY};
-            if (state.board[y][x] == 1) {
+            if (state.board[y][x] == 0) {
                 square.color = WHITESMOKE;
             }
 
@@ -136,17 +144,17 @@ int main(void) {
                     i32 x = e.motion.x / CELL_SIZE;
                     i32 y = e.motion.y / CELL_SIZE;
 
-                    if (e.motion.x > 512) {break;}
+                    if (e.motion.x > 512) {break;} // Let's not excede the chess board or we'll seg fault
 
-                    Piece* p = &state.pieces[y][x];
+                    Piece* p = &state.pieces[y][x]; // We store a reference to the piece so we can modify it later
 
-                    if (state.square_pressed == true) {
-                        state.swap_buffer[1] = p;
-                        state.square_pressed = false;
+                    if (state.wasSquarePressed == true) {
+                        state.moveBuffer[1] = p;
+                        state.wasSquarePressed = false;
                         move_pieces();
                     } else {
-                        state.swap_buffer[0] = p;
-                        state.square_pressed = true;
+                        state.moveBuffer[0] = p;
+                        state.wasSquarePressed = true;
                     }
                     break;
                 }

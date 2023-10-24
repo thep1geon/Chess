@@ -34,7 +34,7 @@ typedef struct Piece {
 
 void drawPiece(SDL_Renderer* renderer, Piece piece);
 void printPiece(Piece piece);
-char* pieceTypeToString(PieceType type);
-char* pieceColorToString(PieceColor color);
+const char* pieceTypeToString(PieceType type);
+const char* pieceColorToString(PieceColor color);
 
 #endif  //__PIECES_H
