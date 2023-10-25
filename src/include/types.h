@@ -63,6 +63,4 @@ vec3 vec3_scalar_mult(vec3 v, f32 scalar);
 f32 vec3_norm(vec3 v);
 vec3 vec2_to_vec3(vec2 v);
 
-vec2 project_vec3(vec3 coords, f32 focal_length);
-
 #endif //__TYPES_H

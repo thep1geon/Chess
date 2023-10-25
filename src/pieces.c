@@ -5,9 +5,8 @@
 #include "include/pieces.h"
 #include "include/rect.h"
 #include "include/types.h"
+#include "include/consts.h"
 
-#define PIECE_WIDTH  16
-#define PIECE_HEIGHT 16
 
 i32 black_pawn[PIECE_HEIGHT][PIECE_WIDTH] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -281,9 +280,10 @@ void drawPiece(SDL_Renderer* renderer, Piece piece) {
             Color backgroundColor = (((i32)piece.gridPos.x + (i32)piece.gridPos.y) % 2) == 0 ? WHITESMOKE : GRAY;
 
             Rect rect = {
-                Vec2(x * (64.0 / PIECE_WIDTH) + piece.gridPos.x * 64, y * (64.0 / PIECE_HEIGHT) + piece.gridPos.y * 64),  // Position
-                64.0 / PIECE_WIDTH,  // Width
-                64.0 / PIECE_HEIGHT, // Height
+                Vec2(x * ((f32)CELL_SIZE / PIECE_WIDTH) + piece.gridPos.x * CELL_SIZE, 
+                     y * ((f32)CELL_SIZE / PIECE_HEIGHT) + piece.gridPos.y * CELL_SIZE),  // Position
+                CELL_SIZE / PIECE_WIDTH,  // Width
+                CELL_SIZE / PIECE_HEIGHT, // Height
                 glyph[y][x] == 1 ? BLACK : backgroundColor // Color
             };
 
@@ -309,7 +309,7 @@ const char* pieceColorToString(PieceColor color) {
 }
 
 void printPiece(Piece piece) {
-    printf("Piece: Type: %s, Color: %s, Pos: {x: %d, y: %d}}\n", 
+    printf("Piece: {Type: %s, Color: %s, Pos: {x: %d, y: %d}}\n", 
            pieceTypeToString(piece.type), 
            pieceColorToString(piece.color),
            (i32) piece.gridPos.x,

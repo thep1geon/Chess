@@ -8,49 +8,18 @@
 #include "include/types.h"
 #include "include/color.h"
 #include "include/rect.h"
-
-// Constants
-#define SCREEN_WIDTH     512
-#define SCREEN_HEIGHT    512
-
-#define CELL_SIZE        64
-#define NUM_ROWS         8
-#define NUM_COLS         8
-
-#define GRID_WIDTH       (SCREEN_WIDTH / CELL_SIZE)
-#define GRID_HEIGHT      (SCREEN_HEIGHT / CELL_SIZE)
-
-#define FPS              60
-#define BACKGROUND_COLOR BLACK
-// __Constants
+#include "include/consts.h"
+#include "include/gamestate.h"
+#include "include/board.h"
 
 // Macros
 
-#define PLACE_PIECE(x, y, type, color) state.pieces[y][x] = type(x, y, color)
-#define EMPTY_SQUARE(x, y)             state.pieces[y][x] = Empty(x, y)
+#define PlacePiece(x, y, type, color) state.pieces[y][x] = type(x, y, color)
+#define EmptySquare(x, y)             state.pieces[y][x] = Empty(x, y)
 
 // __Macros
 
-typedef struct GameState {
-    i32 board[NUM_ROWS][NUM_COLS];
-    Piece pieces[NUM_ROWS][NUM_COLS];
-    Piece* moveBuffer[2];
-    bool wasSquarePressed;
-} GameState;
-
 GameState state;
-
-void move_pieces(void) {
-    state.moveBuffer[1]->color = state.moveBuffer[0]->color; 
-    state.moveBuffer[1]->type = state.moveBuffer[0]->type; 
-
-    state.moveBuffer[0]->color = BlackPiece;
-    state.moveBuffer[0]->type = None;
-
-    // Clear the moveBuffer
-    state.moveBuffer[0] = NULL;
-    state.moveBuffer[1] = NULL;
-}
 
 void init(void) {
     // Fill the board with the apporiate colors
@@ -58,31 +27,31 @@ void init(void) {
         for (i32 x = 0; x < NUM_COLS; ++x) {
             state.board[y][x] = ((x+y)%2);
             
-            if (y == 1) {PLACE_PIECE(x, y, Pawn, BlackPiece);} // Black Pawns
-            else if (y == 6) {PLACE_PIECE(x, y, Pawn, WhitePiece);} // White Pawns
-            else {EMPTY_SQUARE(x, y);}
+            if (y == 1) {PlacePiece(x, y, Pawn, BlackPiece);} // Black Pawns
+            else if (y == 6) {PlacePiece(x, y, Pawn, WhitePiece);} // White Pawns
+            else {EmptySquare(x, y);}
 
         }
     }
     
     // Place the pieces on the board
-    PLACE_PIECE(0, 0, Rook, BlackPiece); // Black pieces
-    PLACE_PIECE(1, 0, Knight, BlackPiece);
-    PLACE_PIECE(2, 0, Bishop, BlackPiece);
-    PLACE_PIECE(3, 0, Queen, BlackPiece);
-    PLACE_PIECE(4, 0, King, BlackPiece);
-    PLACE_PIECE(5, 0, Bishop, BlackPiece);
-    PLACE_PIECE(6, 0, Knight, BlackPiece);
-    PLACE_PIECE(7, 0, Rook, BlackPiece);
+    PlacePiece(0, 0, Rook, BlackPiece); // Black pieces
+    PlacePiece(1, 0, Knight, BlackPiece);
+    PlacePiece(2, 0, Bishop, BlackPiece);
+    PlacePiece(3, 0, Queen, BlackPiece);
+    PlacePiece(4, 0, King, BlackPiece);
+    PlacePiece(5, 0, Bishop, BlackPiece);
+    PlacePiece(6, 0, Knight, BlackPiece);
+    PlacePiece(7, 0, Rook, BlackPiece);
 
-    PLACE_PIECE(0, 7, Rook, WhitePiece); // White pieces
-    PLACE_PIECE(1, 7, Knight, WhitePiece);
-    PLACE_PIECE(2, 7, Bishop, WhitePiece);
-    PLACE_PIECE(3, 7, Queen, WhitePiece);
-    PLACE_PIECE(4, 7, King, WhitePiece);
-    PLACE_PIECE(5, 7, Bishop, WhitePiece);
-    PLACE_PIECE(6, 7, Knight, WhitePiece);
-    PLACE_PIECE(7, 7, Rook, WhitePiece);
+    PlacePiece(0, 7, Rook, WhitePiece); // White pieces
+    PlacePiece(1, 7, Knight, WhitePiece);
+    PlacePiece(2, 7, Bishop, WhitePiece);
+    PlacePiece(3, 7, Queen, WhitePiece);
+    PlacePiece(4, 7, King, WhitePiece);
+    PlacePiece(5, 7, Bishop, WhitePiece);
+    PlacePiece(6, 7, Knight, WhitePiece);
+    PlacePiece(7, 7, Rook, WhitePiece);
 }
 
 void display(SDL_Renderer* renderer) {
@@ -98,6 +67,7 @@ void display(SDL_Renderer* renderer) {
             
             Piece piece = state.pieces[y][x];
             if (piece.type == None) {continue;}
+
             drawPiece(renderer, piece); 
         }
     }
@@ -151,7 +121,8 @@ int main(void) {
                     if (state.wasSquarePressed == true) {
                         state.moveBuffer[1] = p;
                         state.wasSquarePressed = false;
-                        move_pieces();
+                        movePieces(&state);
+                        rotateBoard(&state);
                     } else {
                         state.moveBuffer[0] = p;
                         state.wasSquarePressed = true;
