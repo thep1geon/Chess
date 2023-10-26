@@ -27,6 +27,9 @@ typedef int       bool;
 #endif
 
 // Vector types
+
+#define Vec2Param(vec) vec.x, vec.y
+
 typedef struct {
     f32 x, y; 
 } vec2;
@@ -48,6 +51,7 @@ typedef vec2 Point;
 
 // Vector Functions
 vec2 Vec2(f32 x, f32 y);
+bool vec2_equals(vec2 a, vec2 b);
 vec2 vec2_dot(vec2 a, vec2 b);
 vec2 vec2_sum(vec2 a, vec2 b);
 vec2 vec2_sub(vec2 a, vec2 b);

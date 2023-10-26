@@ -6,12 +6,12 @@
 #include "pieces.h"
 
 typedef struct GameState {
-    i32 board[NUM_ROWS][NUM_COLS];
+    i32   board[NUM_ROWS][NUM_COLS];
 
     Piece pieces[NUM_ROWS][NUM_COLS];
-    Piece* moveBuffer[2];
 
-    bool wasSquarePressed;
+    vec2  clickedSquares[2];
+    bool  wasSquarePressed;
 } GameState;
 
 #endif  //__GAMESTATE_H

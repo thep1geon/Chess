@@ -7,8 +7,8 @@
 #include "./types.h"
 
 typedef struct {
-    vec2 topLeft;
-    i32 width, height;
+    vec2  topLeft;
+    i32   width, height;
     Color color;
 } Rect;
 

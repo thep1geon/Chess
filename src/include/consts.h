@@ -11,9 +11,6 @@
 #define PIECE_WIDTH      16
 #define PIECE_HEIGHT     16
 
-#define GRID_WIDTH       (SCREEN_WIDTH / CELL_SIZE)
-#define GRID_HEIGHT      (SCREEN_HEIGHT / CELL_SIZE)
-
 #define FPS              60
 #define BACKGROUND_COLOR BLACK
 

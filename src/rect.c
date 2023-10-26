@@ -5,7 +5,7 @@
 
 //  Rectangle Stuff
 Rect newRect(vec2 topLeft, i32 width, i32 height, Color color) {
-    return (Rect){.topLeft = topLeft, .width = width, .height = height, .color = color}; 
+    return (Rect) {.topLeft = topLeft, .width = width, .height = height, .color = color}; 
 }
 
 void drawFillRect(SDL_Renderer* renderer, Rect rect) {

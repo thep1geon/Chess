@@ -13,10 +13,8 @@
 #include "include/board.h"
 
 // Macros
-
 #define PlacePiece(x, y, type, color) state.pieces[y][x] = type(x, y, color)
 #define EmptySquare(x, y)             state.pieces[y][x] = Empty(x, y)
-
 // __Macros
 
 GameState state;
@@ -35,23 +33,23 @@ void init(void) {
     }
     
     // Place the pieces on the board
-    PlacePiece(0, 0, Rook, BlackPiece); // Black pieces
+    PlacePiece(0, 0, Rook,   BlackPiece); // Black pieces
     PlacePiece(1, 0, Knight, BlackPiece);
     PlacePiece(2, 0, Bishop, BlackPiece);
-    PlacePiece(3, 0, Queen, BlackPiece);
-    PlacePiece(4, 0, King, BlackPiece);
+    PlacePiece(3, 0, Queen,  BlackPiece);
+    PlacePiece(4, 0, King,   BlackPiece);
     PlacePiece(5, 0, Bishop, BlackPiece);
     PlacePiece(6, 0, Knight, BlackPiece);
-    PlacePiece(7, 0, Rook, BlackPiece);
+    PlacePiece(7, 0, Rook,   BlackPiece);
 
-    PlacePiece(0, 7, Rook, WhitePiece); // White pieces
+    PlacePiece(0, 7, Rook,   WhitePiece); // White pieces
     PlacePiece(1, 7, Knight, WhitePiece);
     PlacePiece(2, 7, Bishop, WhitePiece);
-    PlacePiece(3, 7, Queen, WhitePiece);
-    PlacePiece(4, 7, King, WhitePiece);
+    PlacePiece(3, 7, Queen,  WhitePiece);
+    PlacePiece(4, 7, King,   WhitePiece);
     PlacePiece(5, 7, Bishop, WhitePiece);
     PlacePiece(6, 7, Knight, WhitePiece);
-    PlacePiece(7, 7, Rook, WhitePiece);
+    PlacePiece(7, 7, Rook,   WhitePiece);
 }
 
 void display(SDL_Renderer* renderer) {
@@ -68,7 +66,9 @@ void display(SDL_Renderer* renderer) {
             Piece piece = state.pieces[y][x];
             if (piece.type == None) {continue;}
 
-            drawPiece(renderer, piece); 
+            bool drawOutline = state.wasSquarePressed && vec2_equals(state.clickedSquares[0], Vec2(x, y));
+
+            drawPiece(renderer, piece, drawOutline); 
         }
     }
 }
@@ -114,17 +114,28 @@ int main(void) {
                     i32 x = e.motion.x / CELL_SIZE;
                     i32 y = e.motion.y / CELL_SIZE;
 
-                    if (e.motion.x > 512) {break;} // Let's not excede the chess board or we'll seg fault
+                    Piece p = *pieceAt(&state, x, y);
 
-                    Piece* p = &state.pieces[y][x]; // We store a reference to the piece so we can modify it later
+                    if (e.motion.x > 512) {break;} // Let's not excede the chess board, or else we'll seg fault
 
-                    if (state.wasSquarePressed == true) {
-                        state.moveBuffer[1] = p;
+                    if (state.wasSquarePressed) {
+                        
+                        // The game won't let you move your piece onto a square with another one
+                        // of your pieces. At the same time, this prevents you from double clicking
+                        // the square and making the piece vanish
+                        if (pieceAt(&state, Vec2Param(state.clickedSquares[0]))->color == 
+                            pieceAt(&state, Vec2Param(p.gridPos))->color) {
+
+                            state.wasSquarePressed = false;
+                            break;
+                        }
+
+                        state.clickedSquares[1] = Vec2(x, y);
                         state.wasSquarePressed = false;
                         movePieces(&state);
                         rotateBoard(&state);
-                    } else {
-                        state.moveBuffer[0] = p;
+                    } else if (p.type != None) {
+                        state.clickedSquares[0] = Vec2(x, y);
                         state.wasSquarePressed = true;
                     }
                     break;

@@ -1,8 +1,13 @@
 #include "include/types.h"
 
+
 vec2 Vec2(f32 x, f32 y) {
     vec2 v = (vec2){x, y};
     return v;
+}
+
+bool vec2_equals(vec2 a, vec2 b) {
+    return (a.x == b.x && a.y == b.y);
 }
 
 vec2 vec2_dot(vec2 a, vec2 b) {

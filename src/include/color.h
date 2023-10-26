@@ -139,8 +139,6 @@ typedef struct {
 #define YELLOW               (Color){255, 255, 0, 255}
 #define YELLOWGREEN          (Color){154, 205, 50, 255}
 
-#define WATER_COLOR          (Color){28, 86, 234, 255}
-
 #define ColorParam(Color) Color.r, Color.g, Color.b, Color.a
 
 #endif  //__COLOR_H

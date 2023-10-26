@@ -6,7 +6,7 @@
 
 typedef enum {
     None = 0,
-    PAWN, // While uppercase is black
+    PAWN, 
     ROOK,
     KNIGHT,
     BISHOP,
@@ -14,25 +14,28 @@ typedef enum {
     KING,
 } PieceType;
 
-typedef bool PieceColor;
-#define WhitePiece 1
-#define BlackPiece 0
+typedef enum {
+    NoColor = 0,
+    WhitePiece,
+    BlackPiece,
+} PieceColor;
 
 typedef struct Piece {
-    PieceType type;
+    PieceType  type;
     PieceColor color;
-    vec2 gridPos;
+    vec2       gridPos;
+    bool       hasMoved;
 } Piece;
 
-#define Pawn(x, y, color)   (Piece){PAWN, color, Vec2(x,y)}
-#define Rook(x, y, color)   (Piece){ROOK, color, Vec2(x,y)}
-#define Knight(x, y, color) (Piece){KNIGHT, color, Vec2(x,y)}
-#define Bishop(x, y, color) (Piece){BISHOP, color, Vec2(x,y)}
-#define King(x, y, color)   (Piece){KING, color, Vec2(x,y)}
-#define Queen(x, y, color)  (Piece){QUEEN, color, Vec2(x,y)}
-#define Empty(x, y)         (Piece){None, 0, Vec2(x,y)}
+#define Pawn(x, y, color)   (Piece){PAWN,   color,   Vec2(x,y), .hasMoved = false}
+#define Rook(x, y, color)   (Piece){ROOK,   color,   Vec2(x,y), .hasMoved = false}
+#define Knight(x, y, color) (Piece){KNIGHT, color,   Vec2(x,y), .hasMoved = false}
+#define Bishop(x, y, color) (Piece){BISHOP, color,   Vec2(x,y), .hasMoved = false}
+#define King(x, y, color)   (Piece){KING,   color,   Vec2(x,y), .hasMoved = false}
+#define Queen(x, y, color)  (Piece){QUEEN,  color,   Vec2(x,y), .hasMoved = false}
+#define Empty(x, y)         (Piece){None,   NoColor, Vec2(x,y), .hasMoved = false}
 
-void drawPiece(SDL_Renderer* renderer, Piece piece);
+void drawPiece(SDL_Renderer* renderer, Piece piece, bool drawOutline);
 void printPiece(Piece piece);
 const char* pieceTypeToString(PieceType type);
 const char* pieceColorToString(PieceColor color);
