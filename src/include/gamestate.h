@@ -10,8 +10,12 @@ typedef struct GameState {
 
     Piece pieces[NUM_ROWS][NUM_COLS];
 
+    PieceColor currentPlayer;
+
     vec2  clickedSquares[2];
     bool  wasSquarePressed;
 } GameState;
+
+void switchPlayer(GameState* state);
 
 #endif  //__GAMESTATE_H

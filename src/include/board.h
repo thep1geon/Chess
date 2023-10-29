@@ -14,7 +14,14 @@ void rotateBoard(GameState* state);
 void movePieces(GameState* state);
 void movePiece(GameState* state, i32 x1, i32 y1, i32 x2, i32 y2);
 
+bool validMove(GameState* state, Piece piece, vec2 toPos);
+
+void highlightSquare(GameState* state, i32 x, i32 y);
+void highlightLegalMoves(GameState* state, Piece piece);
+void unhighlightLegalMoves(GameState* state);
+
 Piece* pieceAt(GameState* state, i32 x, i32 y);
+bool isSquareEmpty(GameState* state, i32 x, i32 y);
 
 
 #endif  //__BOARD_H

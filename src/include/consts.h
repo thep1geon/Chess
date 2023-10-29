@@ -14,4 +14,7 @@
 #define FPS              60
 #define BACKGROUND_COLOR BLACK
 
+#define BOARD_COLOR_1    GRAY
+#define BOARD_COLOR_2    GHOSTWHITE
+
 #endif  //__CONSTS_H
