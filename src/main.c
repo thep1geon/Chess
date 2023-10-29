@@ -27,16 +27,13 @@ void init(void) {
             
             
             if (y == 1) {PlacePiece(x, y, Pawn, BlackPiece);} // Black Pawns
-            #if 0
             else if (y == 6) {PlacePiece(x, y, Pawn, WhitePiece);} // White Pawns
-            #endif
             else {EmptySquare(x, y);}
 
         }
     }
     
     // Place the pieces on the board
-    #if 0
     PlacePiece(0, 0, Rook,   BlackPiece); // Black pieces
     PlacePiece(1, 0, Knight, BlackPiece);
     PlacePiece(2, 0, Bishop, BlackPiece);
@@ -54,19 +51,6 @@ void init(void) {
     PlacePiece(5, 7, Bishop, WhitePiece);
     PlacePiece(6, 7, Knight, WhitePiece);
     PlacePiece(7, 7, Rook,   WhitePiece);
-    #endif
-
-    PlacePiece(0, 0, Rook,   BlackPiece); // Black pieces
-    PlacePiece(1, 0, Knight, BlackPiece);
-    PlacePiece(2, 0, Bishop, BlackPiece);
-    PlacePiece(3, 0, Queen,  BlackPiece);
-    PlacePiece(4, 0, King,   BlackPiece);
-    PlacePiece(5, 0, Bishop, BlackPiece);
-    PlacePiece(6, 0, Knight, BlackPiece);
-    PlacePiece(7, 0, Rook,   BlackPiece);
-
-    PlacePiece(4, 6, Queen,   WhitePiece); // White pieces
-    PlacePiece(4, 7, Rook,   WhitePiece); // White pieces
 }
 
 void display(SDL_Renderer* renderer) {
